@@ -25,17 +25,26 @@ async function main() {
 
     socket.on("connect", () => {
       console.log("Connected with ID:", socket.id);
-      socket.emit('setUsername', username);
       socket.emit("getMessages");
+      socket.emit('setUsername', username);
+      socket.emit("getUserInfo", username);
     });
 
     socket.on("printMessages", function (messages) {
       for (let i = 0; i < messages.length; i++) {
         prev_message += messages[i].username + ": " + messages[i].message;
-        if (i < messages.length - 1 && messages[i].username != username)
+        if (i < messages.length - 2 && messages[i].username != username)
           prev_message += "\n";
       }
       printPrevMessages(prev_message);
+    });
+
+    socket.on("printUsersInfo", function (users) {
+      printUsersInfo(users);
+    });
+
+    socket.on("printNewUserInfo", function (user) {
+      printNewUserInfo(user);
     });
 
     socket.on("getServerData", (serverStr) => {
@@ -59,10 +68,26 @@ async function main() {
       console.log(`Got message from another client`)
     });
 
-    socket.on("getHit", (obj) => {
-      console.log(`You got hit by ${obj.shooter}! GG!`);
+    socket.on("getHit", (users) => {
+      updateUsersInfo(users);
+      //console.log(`You got hit by ${obj.shooter}! GG!`);
+      //leave();
+    });
+
+    socket.on("hitPlayer", (users) => {
+      updateUsersInfo(users);
+      //console.log(`You got hit by ${obj.shooter}! GG!`);
+      //leave();
+    });
+
+    socket.on("defeat", () => {
+      //socket.emit("getRidOfUser", user);
       leave();
-    })
+    });
+
+    socket.on("victory", () => {
+      leave();
+    });
 
     socket.on("disconnect", () => {
       console.log("Disconnected:", socket.id);
@@ -83,6 +108,8 @@ const tweakContext = {
   fps: 1847.30,
   chat: "",
   input: "",
+  info: "",
+  users: "",
 };
 
 function systemHTMLInit() {
@@ -102,7 +129,19 @@ function systemHTMLInit() {
     ],
   });
 
-  tab.pages[0].addBinding(tweakContext, 'fps', {
+  const f1 = tab.pages[0].addFolder({
+    title: 'Technical info',
+  });
+  f1.addBinding(tweakContext, 'fps', {
+    readonly: true,
+    multiline: true,
+    rows: 5,
+  });
+
+  const f2 = tab.pages[0].addFolder({
+    title: 'Users',
+  });
+  f2.addBinding(tweakContext, 'users', {
     readonly: true,
     multiline: true,
     rows: 5,
@@ -111,7 +150,7 @@ function systemHTMLInit() {
   tab.pages[1].addBinding(tweakContext, 'chat', {
     readonly: true,
     multiline: true,
-    rows: 5,
+    rows: 7,
   });
 
   tab.pages[1].addBinding(tweakContext, 'input', {
@@ -122,6 +161,10 @@ function systemHTMLInit() {
   const btn = tab.pages[1].addButton({
     title: 'Send a message',
   });
+
+  /* if (tweakContext.input[tweakContext.input - 1].charCodeAt == 13) {
+    btn.click();
+  } */
 
   btn.on('click', () => {
     message = tweakContext.input;
@@ -134,6 +177,23 @@ function systemHTMLInit() {
 function printPrevMessages(prev_msg) {
   if (prev_msg != "") {
     tweakContext.chat += prev_msg;
+  }
+}
+
+function printUsersInfo(users) {
+  for (let user of users) {
+    tweakContext.users += user.username + ". hp: " + user.hp + ". coins: " + user.coins + "\n";
+  }
+}
+
+function printNewUserInfo(user) {
+  tweakContext.users += user.username + ". hp: " + user.hp + ". coins: " + user.coins + "\n";
+}
+
+function updateUsersInfo(users) {
+  tweakContext.users = "";
+  for (let user of users) {
+    tweakContext.users += user.username + ". hp: " + user.hp + ". coins: " + user.coins + "\n";
   }
 }
 
