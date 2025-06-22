@@ -10,6 +10,14 @@ export let username;
 let message = "";
 let prev_message = "";
 
+function victory() {
+  window.location.href = '/victory.html';
+}
+
+function defeat() {
+  window.location.href = '/defeat.html';
+}
+
 function leave() {
   window.location.href = '/';
 }
@@ -70,24 +78,27 @@ async function main() {
 
     socket.on("getHit", (users) => {
       updateUsersInfo(users);
-      //console.log(`You got hit by ${obj.shooter}! GG!`);
       //leave();
     });
 
     socket.on("hitPlayer", (users) => {
       updateUsersInfo(users);
-      //console.log(`You got hit by ${obj.shooter}! GG!`);
       //leave();
     });
 
-    socket.on("defeat", () => {
-      //socket.emit("getRidOfUser", user);
-      leave();
+    socket.on("victory", () => {
+      victory();
     });
 
-    socket.on("victory", () => {
-      leave();
+    socket.on("defeat", () => {
+      //updateUsersInfo(users);
+      //socket.emit("getRidOfUser", user);
+      defeat();
     });
+
+    socket.on("updateUsersData", (users) => {
+      updateUsersInfo(users);
+    })
 
     socket.on("disconnect", () => {
       console.log("Disconnected:", socket.id);
@@ -113,7 +124,6 @@ const tweakContext = {
 };
 
 function systemHTMLInit() {
-  return;
   let tc = time.getTimeContext();
 
   pane = new Pane({

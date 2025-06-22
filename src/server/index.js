@@ -37,6 +37,36 @@ class Message {
 
 let messages = [];
 
+class User {
+  username;
+  hp;
+  coins;
+  constructor(username) {
+    this.username = username;
+    this.hp = 102;
+    this.coins = 0;
+  }
+}
+
+let users = [];
+function userGetByName(username) {
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].name == username) {
+      return users[i];
+    }
+  }
+  return new User("user");
+}
+
+function getUserNoByName(username) {
+  for (let i = 0; i < users.length; i++) {
+    if (users[i].username == username) {
+      return i;
+    }
+  }
+  return 0;
+}
+
 /* App handle */
 
 app.get("/", (req, res) => {
@@ -89,6 +119,16 @@ io.on("connection", (socket) => {
     socket.emit("printMessages", messages)
   });
 
+  socket.on("getUserInfo", (username) => {
+    users.push(new User(username));
+    socket.emit("printUsersInfo", users);
+    for (let client of clients) {
+      if (client.username != username) {
+        client.emit("printNewUserInfo", users[users.length - 1]);
+      }
+    }
+  });
+
   socket.on("updatePlayerData", (playerStr) => {
     const playerObj = JSON.parse(playerStr);
     playersMap[playerObj.name] = playerObj.data;
@@ -107,13 +147,33 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("hitPlayer", (obj) => {
+  socket.on("bulletCollision", (obj) => {
     for (let client of clients) {
       if (client.username == obj.target) {
-        client.emit("getHit", {
-          shooter: obj.shooter
-        });
+        let targetNo = getUserNoByName(obj.target);
+        users[targetNo].hp -= 30;
+        if (users[targetNo].hp < 0) {
+          users.splice(targetNo, 1);
+          //playersMap[users[targetNo].username].online = false;
+          client.emit("defeat");
+        }
+        else {
+          client.emit("getHit", users);
+        }
       }
+      else if (client.username == obj.shooter) {
+        let shooterNo = getUserNoByName(obj.shooter);
+        users[shooterNo].coins += 18;
+        if (users[shooterNo].coins > 102) {
+          users.splice(shooterNo, 1);
+          //playersMap[users[shooterNo].username].online = false;
+          client.emit("victory");
+        }
+        else {
+          client.emit("hitPlayer", users);
+        }
+      }
+      client.emit("updateUsersData", users);
     }
   });
 

@@ -22,7 +22,7 @@ function collision(bulletLoc: mth.vec3): boolean {
       if (name != username && playerContext.online && playerContext.loc != undefined) {
         if (mth.vec3Len(mth.vec3SubVec3(bulletLoc, playerContext.loc)) < 3) {
           playerContext.hit = true;
-          socket.emit("hitPlayer", {
+          socket.emit("bulletCollision", {
             target: name,
             shooter: username,
           });
