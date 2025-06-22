@@ -13,6 +13,7 @@ import { UnitAxis } from "../units/u_axis.ts";
 import { UnitModel } from "../units/u_model.ts";
 import { getPointHeight, UnitGrid } from "../units/u_grid.ts";
 import { texCreateImage } from "./rnd/res/tex.ts";
+import { UnitPrim } from "../units/u_prim.ts";
 
 declare global {
   interface Window {
@@ -54,15 +55,16 @@ export async function animInit() {
   mtl.mtlInit();
   mrk.mrkInit();
   units.unitAdd(new UnitSkybox());
-  units.unitAdd(new UnitAxis());
+  //units.unitAdd(new UnitAxis());
   units.unitAdd(new UnitGrid());
-  units.unitAdd(new UnitModel());
+  //units.unitAdd(new UnitModel());
+  //units.unitAdd(new UnitPrim());
   await units.unitsInit();
 
   const mtlPlayer: mtl.Material = new mtl.Material("Player material", mth.vec3Set1(1), mth.vec3Set1(1), mth.vec3Set1(1), 30, 1,
     shd.shdGetDefault());
   mtlPlayer.textures[0] = texCreateImage("Square texture", "bin/textures/t90diff.png", 1, 1);
-  playerPrim = await prim.primCreateFromOBJ("bin/models/t90.obj", mtlPlayer);
+  playerPrim = await prim.primCreateFromOBJ("bin/models/t90.obj", mtlPlayer, mth.mat4Identity());
 }
 
 function animDrawPlayer(loc: mth.vec3, dir: mth.vec3) {
@@ -80,7 +82,7 @@ function animDrawPlayer(loc: mth.vec3, dir: mth.vec3) {
       mth.mat4Translate(mth.vec3AddVec3(loc, mth.vec3Set(0, 1.30, 0))))
   );
   playerPrim.draw(mth.mat4Identity());
-  prim.primDrawOBB(playerPrim);
+  //prim.primDrawOBB(playerPrim, mth.vec3Set1(1));
 }
 
 export function animRender() {

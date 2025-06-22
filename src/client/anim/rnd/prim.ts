@@ -6,6 +6,7 @@ import { loadTextFromFile } from "../../utils.js";
 import { vec2, vec3, vec4 } from "../../mth/mth.ts"
 import { getRenderContext, RenderContext } from "./rnd.ts";
 import { getTimeContext, TimeContext } from "../timer.ts";
+import { shdGetDefault } from "./res/shd.ts";
 
 export class Vertex {
   position: vec3;
@@ -111,10 +112,10 @@ export class Primitive {
     const tc: TimeContext = getTimeContext();
     window.gl.uniform1f(window.gl.getUniformLocation(this.mtl.shd.program, "Time"), tc.localTime);
 
+    matrW = mth.mat4MulMat4(matrW, this.trans);
     window.gl.uniformMatrix4fv(window.gl.getUniformLocation(this.mtl.shd.program, "MatrW"), false,
       matrW.toArray());
 
-    matrW = mth.mat4MulMat4(matrW, this.trans);
     const matrWVP: mth.mat4 = mth.mat4MulMat4(matrW, getRenderContext().matrVP);
     window.gl.uniformMatrix4fv(window.gl.getUniformLocation(this.mtl.shd.program, "MatrWVP"), false,
       matrWVP.toArray());
@@ -135,7 +136,7 @@ export function primCreate(glType: number, mtl: mtl.Material, vertices: Vertex[]
   return new Primitive(glType, mtl, vertices, indices);
 }
 
-export function primCreateFromOBJString(primSrc: string, mtl: mtl.Material): Primitive {
+export function primCreateFromOBJString(primSrc: string, mtl: mtl.Material, m: mth.mat4 = mth.mat4Identity()): Primitive {
   const lines: string[] = primSrc.split("\n");
   const isSpace: Function = function (c: string) { return c == ' ' || c == '\n' || c == '\t'; };
 
@@ -166,7 +167,7 @@ export function primCreateFromOBJString(primSrc: string, mtl: mtl.Material): Pri
         vertices[v] = new Vertex(new vec3(0, 0, 0), new vec2(0, 0), new vec3(0, 0, 0), new vec4(1, 1, 1, 1));
       }
       const nums: number[] = line.substring(2).split(' ').map((c) => parseFloat(c));
-      vertices[v++].position = mth.vec3Set(nums[0], nums[1], nums[2]);
+      vertices[v++].position = mth.vec3MulMat4(mth.vec3Set(nums[0], nums[1], nums[2]), m);
     } else if (line[0] == 'v' && line[1] == 'n' && line[2] == ' ') {
       if (vertices[vn] == undefined) {
         vertices[vn] = new Vertex(new vec3(0, 0, 0), new vec2(0, 0), new vec3(0, 0, 0), new vec4(1, 1, 1, 1));
@@ -208,9 +209,9 @@ export function primCreateFromOBJString(primSrc: string, mtl: mtl.Material): Pri
   return new Primitive(window.gl.TRIANGLES, mtl, vertices, indices);
 }
 
-export async function primCreateFromOBJ(url: string, mtl: mtl.Material): Promise<Primitive> {
+export async function primCreateFromOBJ(url: string, mtl: mtl.Material, m: mth.mat4): Promise<Primitive> {
   const modelSrc: string = await loadTextFromFile(url);
-  return primCreateFromOBJString(modelSrc, mtl);
+  return primCreateFromOBJString(modelSrc, mtl, m);
 }
 
 export function primAutoNormals(vertices: Vertex[], indices: number[]) {
@@ -232,12 +233,12 @@ export function primAutoNormals(vertices: Vertex[], indices: number[]) {
   }
 }
 
-export function primDrawOBB(prim: Primitive) {
+export function primDrawOBB(prim: Primitive, c: vec3) {
   const vertices: Vertex[] = prim.BB.vertexBounds
     .map((pos) => new Vertex(pos, mth.vec2Set1(0), mth.vec3Set(0, 1, 0), mth.vec4Set1(1)));
   const indices: number[] = [0, 1, 1, 2, 2, 3, 3, 0, 4, 5, 5, 6, 6, 7, 7, 4, 0, 4, 1, 5, 2, 6, 3, 7];
 
-  primCreate(window.gl.LINES, mtl.mtlGetDefault(), vertices, indices).draw(mth.mat4Identity());
+  primCreate(window.gl.LINES, mtl.mtlCreate("BB material", c, c, mth.vec3Set1(0), 0, 1, shdGetDefault()), vertices, indices).draw(mth.mat4Identity());
 }
 
 export function primRecalcOBB(prim: Primitive) {

@@ -113,6 +113,7 @@ const tweakContext = {
 };
 
 function systemHTMLInit() {
+  return;
   let tc = time.getTimeContext();
 
   pane = new Pane({

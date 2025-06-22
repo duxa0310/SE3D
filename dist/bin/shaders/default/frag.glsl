@@ -17,6 +17,8 @@ uniform vec3 CamDir, CamUp, CamRight, CamLoc, CamAt;
 uniform sampler2D Tex0;
 uniform bool IsTexture0;
 
+uniform float Time;
+
 vec3 Shade( vec3 Pos, vec3 N, vec3 Kd, vec3 Ks, float Ph, vec3 L, vec3 LC ) {
   vec3 color = vec3(0), V = normalize(Pos - CamLoc);
  
@@ -38,8 +40,13 @@ void main()
     color = vec4(Ka * DrawColor.xyz, 1.0);
   }
 
+  if (KdTrans.w < 1.0) 
+  {
+    discard;
+  }
+
   color.xyz *= 1.02 * Shade(DrawPos, normalize(DrawNormal), 
       KdTrans.xyz, KsPh.xyz, KsPh.w, normalize(vec3(0.0, 1.0, 0.0)), vec3(1.0, 1.0, 1.0));
   
-  OutColor = vec4(color.xyz, KdTrans.w); 
+  OutColor = vec4(color.xyz, 1.0); 
 }
