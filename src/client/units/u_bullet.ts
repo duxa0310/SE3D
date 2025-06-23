@@ -1,5 +1,6 @@
 import * as mth from "../mth/mth.js"
 import * as prim from "../anim/rnd/prim.ts";
+import * as mdl from "../anim/rnd/model.ts";
 import * as mtl from "../anim/rnd/res/mtl.ts";
 import * as shd from "../anim/rnd/res/shd.ts";
 import { Unit, unitDelete } from "./units.js";
@@ -9,6 +10,12 @@ import { mrkDrawSphere } from "../anim/rnd/res/mrk.ts";
 import { playersMap } from "../anim/anim.ts";
 import { socket, username } from "../main.js";
 import { getPointHeight } from "./u_grid.ts";
+
+let bird: mdl.Model;
+
+export async function loadBird() {
+  bird = await mdl.modelCreateFromG3DM("bin/models/bird.g3dm")
+}
 
 function collision(bulletLoc: mth.vec3): boolean {
   if (bulletLoc.y <= getPointHeight(bulletLoc.x, bulletLoc.z)) {
@@ -38,6 +45,7 @@ export class UnitBullet extends Unit {
   prim!: prim.Primitive;
   pos: mth.vec3;
   vel: mth.vec3;
+  bird!: mdl.Model;
 
   constructor(pos: mth.vec3, vel: mth.vec3) {
     super("Bullet");
@@ -46,7 +54,6 @@ export class UnitBullet extends Unit {
   }
 
   async init() {
-    ;
   }
 
   response() {
@@ -61,6 +68,11 @@ export class UnitBullet extends Unit {
   }
 
   render() {
-    mrkDrawSphere(this.pos, mth.vec3Set1(0.47), mth.vec4Set(0.5, 0.25, 0, 1), mth.mat4Identity());
+    //mrkDrawSphere(this.pos, mth.vec3Set1(0.47), mth.vec4Set(0.5, 0.25, 0, 1), mth.mat4Identity());
+    bird.draw(mth.mat4MulMat4MulMat4(
+      mth.mat4Scale(mth.vec3Set1(0.47)),
+      mth.mat4RotateY(180),
+      mth.mat4Translate(this.pos),
+    ));
   }
 }

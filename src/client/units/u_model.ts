@@ -17,8 +17,8 @@ export class UnitModel extends Unit {
 
   async init() {
     //this.model = await model.modelCreateFromG3DM("bin/models/helic.g3dm");
-    this.prim1 = await prim.primCreateFromOBJ("bin/models/t90.obj", mtl.mtlGetDefault());
-    this.prim2 = await prim.primCreateFromOBJ("bin/models/t90.obj", mtl.mtlGetDefault());
+    this.prim1 = await prim.primCreateFromOBJ("bin/models/t90.obj", mtl.mtlGetDefault(), mth.mat4Identity());
+    this.prim2 = await prim.primCreateFromOBJ("bin/models/t90.obj", mtl.mtlGetDefault(), mth.mat4Identity());
   }
 
   response() { }
@@ -36,10 +36,10 @@ export class UnitModel extends Unit {
         mth.mat4RotateZ(52 * tc.localTime))));
 
     this.prim1.draw(mth.mat4Identity());
-    prim.primDrawOBB(this.prim1);
+    prim.primDrawOBB(this.prim1, mth.vec3Set(0, 0, 0));
 
     this.prim2.draw(mth.mat4Identity());
-    prim.primDrawOBB(this.prim2);
+    prim.primDrawOBB(this.prim2, mth.vec3Set(0, 0, 0));
 
     if (col.obbCollision(this.prim1.BB, this.prim2.BB)) {
       //console.log("Collision detected.");

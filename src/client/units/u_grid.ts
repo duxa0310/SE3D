@@ -87,7 +87,7 @@ export class UnitGrid extends Unit {
 
   async init() {
     const mtlLand: mtl.Material = new mtl.Material("Land material", mth.vec3Set1(1), mth.vec3Set1(0.8), mth.vec3Set1(0), 30, 1, shd.shdGetDefault());
-    mtlLand.textures[0] = tex.texCreateImage("Land texture", "bin/textures/land_grass.jpg", 1, 1);
+    mtlLand.textures[0] = tex.texCreateImage("Land texture", "bin/textures/gravelly_sand.png", 1, 1);
     this.mtl = mtlLand;
   }
 

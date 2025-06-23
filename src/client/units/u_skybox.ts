@@ -15,7 +15,7 @@ export class UnitSkybox extends Unit {
   async init() {
     let skyshader: shd.Shader = shd.shdGetByName("skybox");
     let skyMtl: mtl.Material = mtl.mtlCreate("Skybox material", mth.vec3Set1(0.5), mth.vec3Set1(0.8), mth.vec3Set1(0.3), 30, 1, skyshader);
-    skyMtl.textures[0] = tex.texCreateCubeMap("bin/textures/skyboxes/SkyLand", "bmp");
+    skyMtl.textures[0] = tex.texCreateCubeMap("bin/textures/skyboxes/SkyStd", "png");
     let vertices: prim.Vertex[] = [
       new prim.Vertex(mth.vec3Set(-1, -1, 0), mth.vec2Set(1, 0), mth.vec3Set(0, 0, 0), mth.vec4Set(1, 1, 1, 1)),
       new prim.Vertex(mth.vec3Set(3, -1, 0), mth.vec2Set(0, 1), mth.vec3Set(0, 0, 0), mth.vec4Set(1, 1, 1, 1)),

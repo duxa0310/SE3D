@@ -19,8 +19,8 @@ export class UnitBoundBox extends Unit {
   indices!: number[];
 
   async init() {
-    //this.model = await mdl.modelCreateFromG3DM("bin/models/helic.g3dm");
-    this.model = mdl.modelGetByName("bin/models/helic.g3dm");
+    this.model = await mdl.modelCreateFromG3DM("bin/models/helic.g3dm");
+    //this.model = mdl.modelGetByName("bin/models/helic.g3dm");
     this.vertices = [
       new prim.Vertex(mth.vec3Set(this.model.bb[0].x, this.model.bb[0].y, this.model.bb[0].z), mth.vec2Set(0, 0), mth.vec3Set(0, 0, 1), mth.vec4Set(1, 1, 1, 1)),
       new prim.Vertex(mth.vec3Set(this.model.bb[0].x, this.model.bb[6].y, this.model.bb[0].z), mth.vec2Set(0, 0), mth.vec3Set(0, 0, 1), mth.vec4Set(1, 1, 1, 1)),
