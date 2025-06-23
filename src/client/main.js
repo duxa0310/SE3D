@@ -11,11 +11,11 @@ let message = "";
 let prev_message = "";
 
 function victory() {
-  window.location.href = '/victory.html';
+  window.location.href = '/victory';
 }
 
 function defeat() {
-  window.location.href = '/defeat.html';
+  window.location.href = '/defeat';
 }
 
 function leave() {

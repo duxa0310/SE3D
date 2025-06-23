@@ -77,6 +77,15 @@ app.get("/game", (req, res) => {
   res.sendFile(path.join(__dirname, "/../../dist/game.html"));
 });
 
+app.get("/victory", (req, res) => {
+  res.sendFile(path.join(__dirname, "/../../dist/victory.html"));
+});
+
+app.get("/defeat", (req, res) => {
+  res.sendFile(path.join(__dirname, "/../../dist/defeat.html"));
+});
+
+
 app.use(express.static("dist"));
 
 const playersMap = {};

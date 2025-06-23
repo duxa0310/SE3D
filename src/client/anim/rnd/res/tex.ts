@@ -109,6 +109,12 @@ export function texCreateBinary(name: string, w: number, h: number, c: number, b
   window.gl.texStorage2D(window.gl.TEXTURE_2D, mips,
     c == 4 ? window.gl.RGBA8 : c == 3 ? window.gl.RGB8 : window.gl.R8, w, h);
 
+  for (let i: number = 0; i < bytes.length; i += 4) {
+    let tmp: number = bytes[i];
+    bytes[i] = bytes[i + 2];
+    bytes[i + 2] = tmp;
+  }
+
   if (bytes != null) {
     window.gl.bindTexture(window.gl.TEXTURE_2D, tex.id);
     window.gl.pixelStorei(window.gl.UNPACK_ALIGNMENT, 1);

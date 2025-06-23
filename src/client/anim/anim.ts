@@ -92,7 +92,7 @@ function animDrawPlayer(playerContext: { online: boolean, loc: mth.vec3, dir: mt
   if (name == username) {
     playerContext.prim.BB = structuredClone(playerPrim.BB);
   }
-  prim.primDrawOBB(playerPrim, mth.vec3Set1(1));
+  //prim.primDrawOBB(playerPrim, mth.vec3Set1(1));
 }
 
 export function animRender() {

@@ -160,6 +160,7 @@ export function inputResponse() {
   let deltaPos: mth.vec3 = mth.vec3MulNum(ac.playerDir, 3.0 * tc.localDeltaTime * (1 + Number(input.shiftKey)));
   if (input.keys["w".charCodeAt(0)] || input.keys["s".charCodeAt(0)]) {
     if (input.keys["s".charCodeAt(0)]) deltaPos = mth.vec3Neg(deltaPos);
+    //if ()
     ac.playerPos = mth.vec3AddVec3(ac.playerPos, deltaPos);
     const newY: number = getPointHeight(ac.playerPos.x, ac.playerPos.z);
     const deltaY: number = newY - ac.playerPos.y;
