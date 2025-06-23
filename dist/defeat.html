@@ -1,19 +1,23 @@
 <!DOCTYPE html>
 <html>
-  <head>
+<head>
+    <title>Mission Failed | Scorched Earth 3D</title>
     <link rel = "icon" type = "image/x-icon" href = "./bin/images/favicon.ico">
-  </head>
-  <body style="background-image: url('bin/images/sovietdoor.png'); background-repeat: no-repeat; background-attachment: fixed; background-size: 100% 100%;">
-    <p1 style="color: rgb(31, 11, 209);
-               width: 300px;
-               height: 60px;
-               font-size: 30px;
-               position: absolute;
-               top: 300px;
-               left: 700px;   
-               background-color: azure;
-               border: 3px solid black;
-               border-radius: 10px;
-               ">you lost...</p1>
-  </body>
+    <link href = "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel = "stylesheet">
+    <link rel = "stylesheet" href = "style.css">
+</head>
+<body class = "futuristic-bg defeat" style = "background-image: url('./bin/images/skybg.png')">
+    <div class = "container">
+        <div class = "corner-decoration top-left"></div>
+        <div class = "corner-decoration top-right"></div>
+        <div class = "corner-decoration bottom-left"></div>
+        <div class = "corner-decoration bottom-right"></div>
+        
+        <div class = "result-container">
+            <h1 class = "result-title">You are dead</h1>
+            <p class = "result-message">Got shot with a bird.<br>Mission failed.</p>
+            <a href = "auth.html" class="return-btn">Try Again</a>
+        </div>
+    </div>
+</body>
 </html>
